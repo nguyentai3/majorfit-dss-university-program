@@ -175,13 +175,11 @@ You can also register a new user account at http://localhost:5173/auth/signup.
 - AI features are optional — the matching engine itself is fully deterministic
 - Keep your API keys secure; do not commit `.env` files
 
-## Demo Videos
-
-- Student flow: _add YouTube link here_
-- Admin flow: _add YouTube link here_
-
 ## Author
 
-Nguyen Tan Tai
+**Nguyen Tan Tai**
+- Student ID (UWE): `25066008`
+- Student ID (IU): `ITITWE19023`
+
 International University, Vietnam National University Ho Chi Minh City
 Bachelor Thesis, 2026
