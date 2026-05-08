@@ -1,0 +1,17 @@
+export const APP_ROUTES = {
+    HOME: '/',
+    SIGN_IN: '/auth/signin',
+    SIGN_UP: '/auth/signup',
+    DASHBOARD: '/dashboard',
+    PROFILE: '/profile',
+    ASSESSMENT: '/assessment',
+    ASSESSMENT_HISTORY: '/assessment/history',
+    PROGRAMS: '/programs',
+    MATCHING: '/matching',
+    MATCHING_HISTORY: '/matching/history',
+    SAVED_PROGRAMS: '/saved-programs',
+    ROADMAP: '/matching',
+    SAVED_COLLEGES: '/saved-programs',
+    ADMIN_SIGN_IN: '/admin/signin',
+    ADMIN: '/admin',
+};

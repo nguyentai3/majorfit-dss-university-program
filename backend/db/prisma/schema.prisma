@@ -1,0 +1,551 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String?  @unique
+  email     String   @unique
+  password  String
+  firstName String?  @map("first_name")
+  lastName  String?  @map("last_name")
+  role      String   @default("SUPER_ADMIN")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([role, isActive])
+  @@map("admins")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
+  firstName String?  @map("first_name")
+  lastName  String?  @map("last_name")
+  avatarUrl String?  @map("avatar_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  profile              Profile?
+  savedPrograms        SavedProgram[]
+  riasecAttempts       RiasecAttempt[]
+  riasecProfile        UserRiasecProfile?
+  matchingRuns         MatchingRun[]
+  matchResultFeedbacks MatchResultFeedback[]
+  contextAnswers       UserContextAnswer[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model Profile {
+  id              String   @id @db.VarChar(191)
+  email           String   @db.VarChar(255)
+  fullName        String?  @map("full_name") @db.VarChar(255)
+  avatarUrl       String?  @map("avatar_url") @db.Text
+  bio             String?  @db.Text
+  phone           String?  @db.VarChar(64)
+  location        String?  @db.VarChar(255)
+  dateOfBirth     String?  @map("date_of_birth") @db.VarChar(64)
+  educationLevel  String?  @map("education_level") @db.VarChar(128)
+  schoolName      String?  @map("school_name") @db.VarChar(255)
+  studentCode     String?  @map("student_code") @db.VarChar(64)
+  classCode       String?  @map("class_code") @db.VarChar(64)
+  gradeLevel      Int?     @map("grade_level")
+  academicYear    String?  @map("academic_year") @db.VarChar(32)
+  currentSemester String?  @map("current_semester") @db.VarChar(64)
+  fieldOfInterest String?  @map("field_of_interest") @db.VarChar(255)
+  careerGoal      String?  @map("career_goal") @db.VarChar(255)
+  linkedinUrl     String?  @map("linkedin_url") @db.Text
+  githubUrl       String?  @map("github_url") @db.Text
+  portfolioUrl    String?  @map("portfolio_url") @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@index([email], map: "idx_profiles_email")
+  @@index([classCode], map: "idx_profiles_class_code")
+  @@map("profiles")
+}
+
+model RiasecQuestion {
+  id              String   @id @default(cuid())
+  code            String   @db.VarChar(32)
+  prompt          String   @db.Text
+  dimension       String   @db.VarChar(1)
+  order           Int
+  active          Boolean  @default(true)
+  version         Int      @default(1)
+  subscale        String?  @db.VarChar(64)
+  sourceLabel     String?  @db.VarChar(128) @map("source_label")
+  sourceUrl       String?  @db.VarChar(512) @map("source_url")
+  sourceCitation  String?  @db.Text         @map("source_citation")
+  createdAt       DateTime @default(now())  @map("created_at")
+  updatedAt       DateTime @updatedAt       @map("updated_at")
+
+  @@unique([code, version])
+  @@index([version, active, order])
+  @@map("riasec_questions")
+}
+
+model RiasecQuestionBank {
+  id             String    @id @default(cuid())
+  version        Int       @unique
+  name           String    @db.VarChar(191)
+  description    String?   @db.Text
+  sourceLabel    String?   @map("source_label") @db.VarChar(191)
+  sourceUrl      String?   @map("source_url") @db.VarChar(512)
+  sourceCitation String?   @map("source_citation") @db.Text
+  status         String    @default("DRAFT") @db.VarChar(32)
+  isDefault      Boolean   @default(false) @map("is_default")
+  publishedAt    DateTime? @map("published_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([status, isDefault])
+  @@map("riasec_question_banks")
+}
+
+model RiasecAttempt {
+  id                   String    @id @default(cuid())
+  userId               String    @map("user_id")
+  questionVersion      Int       @default(1) @map("question_version")
+  hollandCode          String    @map("holland_code") @db.VarChar(3)
+  scoresJson           String    @map("scores_json") @db.LongText
+  normalizedScoresJson String    @map("normalized_scores_json") @db.LongText
+  skillVectorJson      String?   @map("skill_vector_json") @db.LongText
+  summaryJson          String?   @map("summary_json") @db.LongText
+  gradeLevel           Int?      @map("grade_level")
+  academicYear         String?   @map("academic_year") @db.VarChar(32)
+  semester             String?   @db.VarChar(64)
+  attemptLabel         String?   @map("attempt_label") @db.VarChar(191)
+  status               String    @default("COMPLETED") @db.VarChar(32)
+  startedAt            DateTime? @map("started_at")
+  submittedAt          DateTime  @default(now()) @map("submitted_at")
+  completedAt          DateTime? @map("completed_at")
+  durationSeconds      Int?      @map("duration_seconds")
+  createdAt            DateTime  @default(now()) @map("created_at")
+
+  user     User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers  RiasecAnswer[]
+
+  latestForProfiles  UserRiasecProfile[] @relation("LatestRiasecAttempt")
+  sourceMatchingRuns MatchingRun[]       @relation("MatchingRunSourceAttempt")
+
+  @@index([userId, submittedAt])
+  @@map("riasec_attempts")
+}
+
+model RiasecAnswer {
+  id             String        @id @default(cuid())
+  attemptId      String        @map("attempt_id")
+  questionId     String        @map("question_id") @db.VarChar(191)
+  questionCode   String        @map("question_code") @db.VarChar(32)
+  questionPrompt String        @map("question_prompt") @db.Text
+  dimension      String        @db.VarChar(1)
+  answerValue    Int           @map("answer_value")
+  score          Int
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  attempt RiasecAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@map("riasec_answers")
+}
+
+model UserRiasecProfile {
+  userId                String    @id @map("user_id")
+  latestAttemptId       String?   @unique @map("latest_attempt_id")
+  latestHollandCode     String?   @map("latest_holland_code") @db.VarChar(3)
+  latestScoresJson      String?   @map("latest_scores_json") @db.LongText
+  normalizedScoresJson  String?   @map("normalized_scores_json") @db.LongText
+  latestSkillVectorJson String?   @map("latest_skill_vector_json") @db.LongText
+  stableScoresJson      String?   @map("stable_scores_json") @db.LongText
+  stableSkillVectorJson String?   @map("stable_skill_vector_json") @db.LongText
+  trendJson             String?   @map("trend_json") @db.LongText
+  growthJson            String?   @map("growth_json") @db.LongText
+  confidenceScore       Float?    @map("confidence_score")
+  firstAssessedAt       DateTime? @map("first_assessed_at")
+  lastAssessedAt        DateTime? @map("last_assessed_at")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  latestAttempt RiasecAttempt? @relation("LatestRiasecAttempt", fields: [latestAttemptId], references: [id], onDelete: SetNull)
+
+  @@map("user_riasec_profiles")
+}
+
+model UserContextAnswer {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  attemptId   String?  @map("attempt_id") @db.VarChar(191)
+  questionKey String   @map("question_key") @db.VarChar(191)
+  answerJson  String   @map("answer_json") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, questionKey])
+  @@index([userId, createdAt])
+  @@map("user_context_answers")
+}
+
+model University {
+  id        String   @id @default(cuid())
+  code      String   @unique @db.VarChar(64)
+  name      String   @db.VarChar(255)
+  shortName String?  @map("short_name") @db.VarChar(128)
+  city      String?  @db.VarChar(128)
+  state     String?  @db.VarChar(128)
+  country   String?  @db.VarChar(128)
+  website   String?  @db.VarChar(255)
+  overview  String?  @db.Text
+  featured  Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  programs Program[]
+
+  @@index([featured, name])
+  @@map("universities")
+}
+
+model Program {
+  id            String   @id @default(cuid())
+  universityId  String   @map("university_id")
+  code          String   @unique @db.VarChar(64)
+  slug          String   @unique @db.VarChar(191)
+  name          String   @db.VarChar(255)
+  degreeLevel   String?  @map("degree_level") @db.VarChar(64)
+  department    String?  @db.VarChar(191)
+  focusArea     String?  @map("focus_area") @db.VarChar(128)
+  summary       String?  @db.Text
+  sourceUrl     String?  @map("source_url") @db.VarChar(255)
+  durationYears Int?     @map("duration_years")
+  keyCoursesJson String? @map("key_courses_json") @db.LongText
+  courseSourceUrl String? @map("course_source_url") @db.VarChar(500)
+  domainTagsJson String?  @map("domain_tags_json") @db.Text
+  status        String   @default("ACTIVE") @db.VarChar(32)
+  featured      Boolean  @default(false)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  university    University           @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  curriculums   ProgramCurriculum[]
+  profiles      ProgramProfile[]
+  analysisRuns  ProgramAnalysisRun[]
+  savedByUsers  SavedProgram[]
+  matchResults  MatchResult[]
+  onetLinks     ProgramOnetLink[]
+  expertReviews ExpertReview[]
+
+  @@index([universityId, status, featured])
+  @@index([focusArea, status])
+  @@map("programs")
+}
+
+model ProgramCurriculum {
+  id             String   @id @default(cuid())
+  programId      String   @map("program_id")
+  version        Int      @default(1)
+  sourceType     String   @map("source_type") @db.VarChar(32)
+  sourceUrl      String?  @map("source_url") @db.VarChar(255)
+  fileName       String?  @map("file_name") @db.VarChar(255)
+  title          String?  @db.VarChar(191)
+  curriculumText String?  @map("curriculum_text") @db.LongText
+  extractedText  String?  @map("extracted_text") @db.LongText
+  objectivesJson String?  @map("objectives_json") @db.LongText
+  courseListJson  String?  @map("course_list_json") @db.LongText
+  notes          String?  @db.Text
+  status         String   @default("ACTIVE") @db.VarChar(32)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  program      Program              @relation(fields: [programId], references: [id], onDelete: Cascade)
+  profiles     ProgramProfile[]
+  analysisRuns ProgramAnalysisRun[]
+
+  @@unique([programId, version])
+  @@index([programId, version])
+  @@map("program_curriculums")
+}
+
+model ProgramProfile {
+  id                  String    @id @default(cuid())
+  programId           String    @map("program_id")
+  curriculumId        String?   @map("curriculum_id")
+  sourceType          String    @map("source_type") @db.VarChar(32)
+  promptVersion       String?   @map("prompt_version") @db.VarChar(64)
+  modelName           String?   @map("model_name") @db.VarChar(128)
+  riasecScoresJson    String    @map("riasec_scores_json") @db.LongText
+  skillVectorJson     String    @map("skill_vector_json") @db.LongText
+  extractedSkillsJson String?   @map("extracted_skills_json") @db.LongText
+  summaryJson         String?   @map("summary_json") @db.LongText
+  aiSummary           String?   @map("ai_summary") @db.LongText
+  reasoning           String?   @db.LongText
+  evidenceJson        String?   @map("evidence_json") @db.LongText
+  reviewNotes         String?   @map("review_notes") @db.LongText
+  confidenceScore     Float?    @map("confidence_score")
+  reviewStatus        String    @default("PUBLISHED") @map("review_status") @db.VarChar(32)
+  isPublished         Boolean   @default(true) @map("is_published")
+  publishedAt         DateTime? @map("published_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  program        Program              @relation(fields: [programId], references: [id], onDelete: Cascade)
+  curriculum     ProgramCurriculum?   @relation(fields: [curriculumId], references: [id], onDelete: SetNull)
+  analysisRuns   ProgramAnalysisRun[]
+  matchResults   MatchResult[]
+  expertReviews  ExpertReview[]
+
+  @@index([programId, isPublished, publishedAt])
+  @@map("program_profiles")
+}
+
+model ProgramAnalysisRun {
+  id                 String    @id @default(cuid())
+  programId          String    @map("program_id")
+  curriculumId       String?   @map("curriculum_id")
+  generatedProfileId String?   @map("generated_profile_id")
+  mode               String    @default("DIRECT_MODEL") @db.VarChar(32)
+  provider           String?   @db.VarChar(64)
+  model              String?   @db.VarChar(128)
+  promptVersion      String?   @map("prompt_version") @db.VarChar(64)
+  responseVersion    String?   @map("response_version") @db.VarChar(64)
+  systemPrompt       String?   @map("system_prompt") @db.LongText
+  promptText         String?   @map("prompt_text") @db.LongText
+  aiResponseText     String?   @map("ai_response_text") @db.LongText
+  parsedResultJson   String?   @map("parsed_result_json") @db.LongText
+  evidenceJson       String?   @map("evidence_json") @db.LongText
+  reviewNotes        String?   @map("review_notes") @db.LongText
+  status             String    @default("PROMPT_READY") @db.VarChar(32)
+  errorMessage       String?   @map("error_message") @db.Text
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  reviewedAt         DateTime? @map("reviewed_at")
+
+  program          Program            @relation(fields: [programId], references: [id], onDelete: Cascade)
+  curriculum       ProgramCurriculum? @relation(fields: [curriculumId], references: [id], onDelete: SetNull)
+  generatedProfile ProgramProfile?    @relation(fields: [generatedProfileId], references: [id], onDelete: SetNull)
+
+  @@index([programId, createdAt])
+  @@map("program_analysis_runs")
+}
+
+model MatchingRun {
+  id                    String   @id @default(cuid())
+  userId                String   @map("user_id")
+  latestAttemptId       String?  @map("latest_attempt_id")
+  scope                 String   @default("ALL_PUBLISHED") @db.VarChar(32)
+  focusArea             String?  @map("focus_area") @db.VarChar(128)
+  algorithmVersion      String   @default("matching-v1") @map("algorithm_version") @db.VarChar(64)
+  weightsJson           String?  @map("weights_json") @db.LongText
+  profileSnapshotJson   String   @map("profile_snapshot_json") @db.LongText
+  stableScoresJson      String?  @map("stable_scores_json") @db.LongText
+  stableSkillVectorJson String?  @map("stable_skill_vector_json") @db.LongText
+  growthJson            String?  @map("growth_json") @db.LongText
+  comparisonJson        String?  @map("comparison_json") @db.LongText
+  aiComparisonJson      String?  @map("ai_comparison_json") @db.LongText
+  confidenceScore       Float?   @map("confidence_score")
+  totalPrograms         Int      @default(0) @map("total_programs")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  latestAttempt RiasecAttempt? @relation("MatchingRunSourceAttempt", fields: [latestAttemptId], references: [id], onDelete: SetNull)
+  results       MatchResult[]
+
+  @@index([userId, createdAt])
+  @@index([scope, focusArea])
+  @@map("matching_runs")
+}
+
+model MatchResult {
+  id               String   @id @default(cuid())
+  matchingRunId    String   @map("matching_run_id")
+  programId        String   @map("program_id")
+  programProfileId String?  @map("program_profile_id")
+  rank             Int
+  finalScore       Float    @map("final_score")
+  riasecScore      Float    @map("riasec_score")
+  skillScore       Float    @map("skill_score")
+  growthScore      Float    @map("growth_score")
+  confidenceScore  Float    @map("confidence_score")
+  fitLevel         String   @map("fit_level") @db.VarChar(32)
+  strengthsJson    String?  @map("strengths_json") @db.LongText
+  gapsJson         String?  @map("gaps_json") @db.LongText
+  diagnosticsJson  String?  @map("diagnostics_json") @db.LongText
+  explanationJson  String?  @map("explanation_json") @db.LongText
+  aiExplanation    String?  @map("ai_explanation") @db.LongText
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  matchingRun    MatchingRun     @relation(fields: [matchingRunId], references: [id], onDelete: Cascade)
+  program        Program         @relation(fields: [programId], references: [id], onDelete: Cascade)
+  programProfile ProgramProfile? @relation(fields: [programProfileId], references: [id], onDelete: SetNull)
+  feedbacks      MatchResultFeedback[]
+
+  @@unique([matchingRunId, programId])
+  @@index([programId, finalScore])
+  @@index([matchingRunId, rank])
+  @@map("match_results")
+}
+
+model SavedProgram {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  programId String   @map("program_id")
+  notes     String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, programId])
+  @@index([userId, createdAt])
+  @@map("saved_programs")
+}
+
+model MatchResultFeedback {
+  id            String   @id @default(cuid())
+  matchResultId String   @map("match_result_id")
+  userId        String   @map("user_id")
+  rating        Int      // 1-5 stars
+  isRelevant    Boolean  @default(true) @map("is_relevant")
+  comment       String?  @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  matchResult MatchResult @relation(fields: [matchResultId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([matchResultId, userId])
+  @@index([userId, createdAt])
+  @@map("match_result_feedback")
+}
+
+model OnetOccupation {
+  id                String   @id @default(cuid())
+  onetCode          String   @unique @map("onet_code") @db.VarChar(16)
+  title             String   @db.VarChar(255)
+  description       String?  @db.LongText
+  hollandCode       String?  @map("holland_code") @db.VarChar(6)
+  riasecScoresJson  String?  @map("riasec_scores_json") @db.LongText
+  topSkillsJson     String?  @map("top_skills_json") @db.LongText
+  topKnowledgeJson  String?  @map("top_knowledge_json") @db.LongText
+  hotTechJson       String?  @map("hot_tech_json") @db.LongText
+
+  jobOutlook        String?  @map("job_outlook") @db.VarChar(32)       // Bright, Average, Below Average
+  brightOutlook     Boolean  @default(false) @map("bright_outlook")
+  educationLevel    String?  @map("education_level") @db.VarChar(128)  // bachelor's degree, etc.
+  jobZone           Int?     @map("job_zone")                          // 1-5
+  alsoCalledJson    String?  @map("also_called_json") @db.LongText     // ["Software Engineer", ...]
+  workStylesJson    String?  @map("work_styles_json") @db.LongText     // ["Innovation", "Adaptability", ...]
+
+  dataVersion       String   @default("30.2") @map("data_version") @db.VarChar(16)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  programs ProgramOnetLink[]
+
+  @@index([hollandCode])
+  @@index([title])
+  @@index([jobZone])
+  @@map("onet_occupations")
+}
+
+model ProgramOnetLink {
+  id           String  @id @default(cuid())
+  programId    String  @map("program_id")
+  occupationId String  @map("occupation_id")
+  relevance    Int     @default(5)               // 1-10 strength of association
+  isPrimary    Boolean @default(false) @map("is_primary")
+  note         String? @db.VarChar(255)
+
+  program    Program        @relation(fields: [programId], references: [id], onDelete: Cascade)
+  occupation OnetOccupation @relation(fields: [occupationId], references: [id], onDelete: Cascade)
+
+  @@unique([programId, occupationId])
+  @@index([occupationId])
+  @@map("program_onet_links")
+}
+
+model CipSocCrosswalkSource {
+  id          String   @id @default(cuid())
+  sourceName  String   @map("source_name") @db.VarChar(128)
+  sourceUrl   String   @map("source_url") @db.VarChar(512)
+  dataVersion String?  @map("data_version") @db.VarChar(64)
+  fileHash    String?  @map("file_hash") @db.VarChar(128)
+  rowCount    Int      @default(0) @map("row_count")
+  syncedAt    DateTime @default(now()) @map("synced_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  rows CipSocCrosswalk[]
+
+  @@index([syncedAt])
+  @@index([sourceName, dataVersion])
+  @@map("cip_soc_crosswalk_sources")
+}
+
+model CipSocCrosswalk {
+  id        String   @id @default(cuid())
+  sourceId  String   @map("source_id")
+  cipCode   String   @map("cip_code") @db.VarChar(16)
+  cipTitle  String?  @map("cip_title") @db.VarChar(255)
+  socCode   String   @map("soc_code") @db.VarChar(16)
+  socTitle  String?  @map("soc_title") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  source CipSocCrosswalkSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, cipCode, socCode])
+  @@index([cipCode])
+  @@index([socCode])
+  @@index([sourceId, cipCode])
+  @@index([sourceId, socCode])
+  @@map("cip_soc_crosswalks")
+}
+
+model ExpertReview {
+  id                   String   @id @default(cuid())
+  programProfileId     String   @map("program_profile_id")
+  programId            String   @map("program_id")
+  reviewerName         String   @map("reviewer_name") @db.VarChar(255)
+  reviewerTitle        String?  @map("reviewer_title") @db.VarChar(255)
+  reviewerEmail        String?  @map("reviewer_email") @db.VarChar(255)
+  reviewerInstitution  String?  @map("reviewer_institution") @db.VarChar(255)
+  riasecAgreementJson  String   @map("riasec_agreement_json") @db.LongText
+  skillAgreementJson   String   @map("skill_agreement_json") @db.LongText
+  summaryAccuracy      Int      @map("summary_accuracy")
+  overallScore         Int?     @map("overall_score")
+  strengthNotes        String?  @map("strength_notes") @db.Text
+  weaknessNotes        String?  @map("weakness_notes") @db.Text
+  overallNotes         String?  @map("overall_notes") @db.Text
+  recommendation       String?  @db.VarChar(32)  // ACCEPT, REVISE, REJECT
+  reviewDate           DateTime @map("review_date")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  programProfile ProgramProfile @relation(fields: [programProfileId], references: [id], onDelete: Cascade)
+  program        Program        @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@index([programProfileId])
+  @@index([programId])
+  @@index([reviewerName, reviewDate])
+  @@map("expert_reviews")
+}

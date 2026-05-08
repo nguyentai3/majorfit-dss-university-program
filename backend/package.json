@@ -1,0 +1,46 @@
+{
+  "name": "majorfit-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "build": "node -e \"console.log('Backend uses JavaScript source; no build step required')\"",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate --schema db/prisma/schema.prisma",
+    "db:push": "prisma db push --schema db/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema db/prisma/schema.prisma",
+    "db:studio": "prisma studio --schema db/prisma/schema.prisma",
+    "db:provision": "node src/scripts/provisionDatabase.js",
+    "db:seed-riasec": "node src/scripts/seedRiasecQuestions.js",
+    "db:seed-programs": "node src/scripts/seedProgramDataset.js",
+    "db:sync-admin": "node src/scripts/syncAdminRoles.js",
+    "db:sync-admin-roles": "node src/scripts/syncAdminRoles.js",
+    "supplement:onet": "node src/scripts/supplementOnetData.js",
+    "db:seed-onet": "node src/scripts/seedOnetOccupations.js",
+    "crosswalk:sync": "node src/scripts/syncCipSocCrosswalk.js",
+    "crosswalk:benchmark": "node src/scripts/benchmarkCrosswalkSync.js",
+    "crosswalk:rollback-last": "node src/scripts/rollbackLastCrosswalkSync.js",
+    "benchmark": "node src/scripts/benchmarkAccuracy.js",
+    "test": "node --test tests/*.test.js",
+    "postinstall": "npm run prisma:generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.3.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "mysql2": "^3.18.1",
+    "pdf-parse": "^1.1.4",
+    "xlsx": "^0.18.5",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.7.1"
+  }
+}

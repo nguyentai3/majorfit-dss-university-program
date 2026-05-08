@@ -1,0 +1,29 @@
+{
+  "name": "majorfit",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "start": "concurrently -n backend,frontend -c blue,green \"npm --prefix backend run start\" \"npm --prefix frontend run preview\"",
+    "start:backend": "npm --prefix backend run start",
+    "start:frontend": "npm --prefix frontend run preview",
+    "db:generate": "npm --prefix backend run prisma:generate",
+    "db:provision": "npm --prefix backend run db:provision --",
+    "db:seed-riasec": "npm --prefix backend run db:seed-riasec",
+    "db:seed-programs": "npm --prefix backend run db:seed-programs",
+    "db:push": "npm --prefix backend run db:push",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "db:sync-admin": "npm run db:sync-admin-roles",
+    "db:sync-admin-roles": "npm --prefix backend run db:sync-admin-roles",
+    "db:studio": "npm --prefix backend run db:studio",
+    "vercel-build": "npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
