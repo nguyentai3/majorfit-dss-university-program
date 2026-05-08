@@ -26,7 +26,7 @@ A web-based Decision Support System for personalized university program recommen
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/majorfit-dss.git
+git clone https://github.com/nguyentai3/majorfit-dss-university-program.git
 cd majorfit-dss
 ```
 
