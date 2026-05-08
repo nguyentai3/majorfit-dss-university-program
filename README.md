@@ -1,6 +1,6 @@
 # MajorFit
 
-A web-based Decision Support System for personalized university program recommendation in Vietnamese higher education. Bachelor thesis project — International University, VNU HCMC, 2026.
+A web-based Decision Support System for personalized university program recommendation in Vietnamese higher education. International University, VNU HCMC, 2026.
 
 ## Tech Stack
 
@@ -182,4 +182,4 @@ You can also register a new user account at http://localhost:5173/auth/signup.
 - Student ID (IU): `ITITWE19023`
 
 International University, Vietnam National University Ho Chi Minh City
-Bachelor Thesis, 2026
+2026
