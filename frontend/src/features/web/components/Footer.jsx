@@ -154,7 +154,7 @@ export default function Footer() {
               className="text-sm text-slate-500"
             >
               © {currentYear} MajorFit. {translations?.footer?.copyright || 'All rights reserved.'}{' '}
-              {translations?.footer?.builtWithLove || 'Built with care for students everywhere.'}
+              {translations?.footer?.tagline || 'A thesis project supporting university program recommendation.'}
             </motion.p>
 
             <motion.button

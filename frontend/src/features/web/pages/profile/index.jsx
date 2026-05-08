@@ -462,14 +462,14 @@ export default function ProfilePage() {
                                             <div className="flex items-center gap-3 mb-4">
                                                 <Info size={20} className="text-sky-600" />
                                                 <h4 className="text-lg font-semibold text-slate-900">
-                                                    Profile Reliability
+                                                    {text.profileReliability || 'Profile Reliability'}
                                                 </h4>
                                             </div>
 
                                             <div className="grid md:grid-cols-2 gap-6">
                                                 <div className="space-y-4">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-sm text-slate-500">Overall Consistency</span>
+                                                        <span className="text-sm text-slate-500">{text.overallConsistency || 'Overall Consistency'}</span>
                                                         <span className="text-2xl font-bold text-slate-900">
                                                             {assessmentProfile.profileConsistency.overallConsistency != null
                                                                 ? `${assessmentProfile.profileConsistency.overallConsistency}%`
@@ -490,11 +490,11 @@ export default function ProfilePage() {
                                                         <div className="text-sm">
                                                             {assessmentProfile.profileConsistency.isConverging ? (
                                                                 <span className="text-emerald-400">
-                                                                    ↗ Your scores are converging — your profile is becoming more stable over time.
+                                                                    {text.scoresConverging || '↗ Your scores are converging — your profile is becoming more stable over time.'}
                                                                 </span>
                                                             ) : (
                                                                 <span className="text-orange-400">
-                                                                    ↘ Your recent scores show more variation — this can reflect genuine development.
+                                                                    {text.scoresVarying || '↘ Your recent scores show more variation — this can reflect genuine development.'}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -502,21 +502,21 @@ export default function ProfilePage() {
 
                                                     {assessmentProfile.profileConsistency?.hollandStability && assessmentProfile.profileConsistency.hollandStability !== 'no_data' && (
                                                         <div className="mt-3 pt-3 border-t border-gray-700/50">
-                                                            <div className="text-xs text-gray-400 mb-1">Holland Code Stability</div>
+                                                            <div className="text-xs text-gray-400 mb-1">{text.hollandCodeStability || 'Holland Code Stability'}</div>
                                                             <div className={`text-sm font-medium ${
                                                                 assessmentProfile.profileConsistency.hollandStability === 'stable' ? 'text-emerald-400' :
                                                                 assessmentProfile.profileConsistency.hollandStability === 'developing' ? 'text-blue-400' :
                                                                 assessmentProfile.profileConsistency.hollandStability === 'volatile' ? 'text-orange-500' :
                                                                 'text-slate-500'
                                                             }`}>
-                                                                {assessmentProfile.profileConsistency.hollandStability === 'stable' && 'Stable — same Holland code across attempts'}
-                                                                {assessmentProfile.profileConsistency.hollandStability === 'single_attempt' && 'Single attempt — take more for stability data'}
-                                                                {assessmentProfile.profileConsistency.hollandStability === 'developing' && `Developing — ${assessmentProfile.profileConsistency.uniqueHollandCodes} unique codes observed`}
-                                                                {assessmentProfile.profileConsistency.hollandStability === 'volatile' && `Volatile — ${assessmentProfile.profileConsistency.uniqueHollandCodes} different codes across attempts`}
+                                                                {assessmentProfile.profileConsistency.hollandStability === 'stable' && (text.stableSameCodes || 'Stable — same Holland code across attempts')}
+                                                                {assessmentProfile.profileConsistency.hollandStability === 'single_attempt' && (text.singleAttempt || 'Single attempt — take more for stability data')}
+                                                                {assessmentProfile.profileConsistency.hollandStability === 'developing' && (text.developingCodes || 'Developing — {{count}} unique codes observed').replace('{{count}}', assessmentProfile.profileConsistency.uniqueHollandCodes)}
+                                                                {assessmentProfile.profileConsistency.hollandStability === 'volatile' && (text.volatileCodes || 'Volatile — {{count}} different codes across attempts').replace('{{count}}', assessmentProfile.profileConsistency.uniqueHollandCodes)}
                                                             </div>
                                                             {assessmentProfile.profileConsistency.hollandCodes?.length > 1 && (
                                                                 <div className="mt-1 text-[10px] text-slate-500">
-                                                                    History: {assessmentProfile.profileConsistency.hollandCodes.join(' → ')}
+                                                                    {text.history || 'History'}: {assessmentProfile.profileConsistency.hollandCodes.join(' → ')}
                                                                 </div>
                                                             )}
                                                         </div>
@@ -525,39 +525,39 @@ export default function ProfilePage() {
 
                                                 <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600 space-y-3">
                                                     <div className="mb-2 text-base font-semibold text-slate-900">
-                                                        How your matching profile is prepared
+                                                        {text.howMatchingPrepared || 'How your matching profile is prepared'}
                                                     </div>
 
                                                     <div className="space-y-2">
                                                         <div className="flex items-start gap-2">
                                                             <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-gray-700 flex items-center justify-center text-[10px] font-bold text-white">1</span>
                                                             <div>
-                                                                <span className="font-medium text-slate-900">Latest Scores</span>
-                                                                <span className="text-slate-500"> — your most recent assessment result.</span>
+                                                                <span className="font-medium text-slate-900">{text.latestScores || 'Latest Scores'}</span>
+                                                                <span className="text-slate-500"> — {text.latestScoresDesc || 'your most recent assessment result.'}</span>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start gap-2">
                                                             <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-600 text-[10px] font-bold text-white">2</span>
                                                             <div>
-                                                                <span className="font-medium text-sky-700">Stable Scores</span>
-                                                                <span className="text-slate-500"> — a steadier profile built from recent attempts.</span>
+                                                                <span className="font-medium text-sky-700">{text.stableScores || 'Stable Scores'}</span>
+                                                                <span className="text-slate-500"> — {text.stableScoresDesc || 'a steadier profile built from recent attempts.'}</span>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start gap-2">
                                                             <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white">3</span>
                                                             <div>
-                                                                <span className="font-medium text-indigo-700">Matching</span>
-                                                                <span className="text-slate-500"> — the program matching algorithm uses your </span>
-                                                                <span className="font-medium text-sky-700">Stable Scores</span>
-                                                                <span className="text-slate-500">, not the latest attempt alone. So more attempts → more accurate matching.</span>
+                                                                <span className="font-medium text-indigo-700">{text.matching || 'Matching'}</span>
+                                                                <span className="text-slate-500"> — {text.matchingUsesStable || 'the program matching algorithm uses your'} </span>
+                                                                <span className="font-medium text-sky-700">{text.stableScores || 'Stable Scores'}</span>
+                                                                <span className="text-slate-500">{text.matchingMoreAttempts || ', not the latest attempt alone. So more attempts → more accurate matching.'}</span>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="mt-3 border-t border-slate-200 pt-3">
-                                                        <div className="mb-1 text-xs font-medium text-slate-900">Why not just use the latest?</div>
+                                                        <div className="mb-1 text-xs font-medium text-slate-900">{text.whyNotLatest || 'Why not just use the latest?'}</div>
                                                         <p className="text-xs text-slate-500">
-                                                            Interests can shift between attempts. A stable profile keeps matching from overreacting to one unusual assessment.
+                                                            {text.whyNotLatestDesc || 'Interests can shift between attempts. A stable profile keeps matching from overreacting to one unusual assessment.'}
                                                         </p>
                                                     </div>
                                                 </div>

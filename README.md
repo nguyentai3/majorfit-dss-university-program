@@ -1,67 +1,113 @@
 # MajorFit
 
-MajorFit is a thesis project implementing a 3-step student-program matching system:
-
-1. **RIASEC Assessment** - Students take a Holland-based assessment to generate a capability profile (RIASEC scores, skill vectors, confidence).
-2. **AI Curriculum Analysis** - Admins upload university curricula; AI analyzes them to produce measurable program profiles (RIASEC scores, skill maps).
-3. **Profile Matching** - The system matches student profiles against program profiles using a weighted multi-factor scoring formula.
+A web-based Decision Support System for personalized university program recommendation in Vietnamese higher education. Bachelor thesis project — International University, VNU HCMC, 2026.
 
 ## Tech Stack
 
-- **Frontend**: React 18 + Vite + Ant Design + Tailwind CSS
-- **Backend**: Express 4 + Prisma + MySQL (MAMP)
-- **Database**: majorfit
-- **Auth**: JWT + HttpOnly cookies (separate user/admin flows)
-- **AI**: OpenAI-compatible / Groq providers (default: manual-ai mode)
+- Node.js (v18 or higher)
+- Express.js 4
+- Prisma ORM
+- MySQL 8
+- React 18 + Vite
+- Ant Design + Tailwind CSS
+- React Query
+- i18next (English + Vietnamese)
+- OpenAI-compatible AI provider (Groq, OpenAI, Gemini)
 
-## Architecture
+## Prerequisites
 
-### Public user flow
-- Public site: /, /auth/signin, /dashboard, /assessment, /programs, /matching
-- Auth against the `users` table, cookie: `auth_token`
+- Node.js v18 or higher
+- MySQL 8 (MAMP on port 8889, or standalone MySQL on port 3306)
+- npm
+- (Optional) Groq API key for AI features — https://console.groq.com
 
-### Admin flow
-- Admin routes: /admin/signin, /admin
-- Auth against the `admin` table, cookie: `admin_auth_token`
+## Installation
 
-## Local Development
+### 1. Clone the repository
 
-### 1. Database
-Local MySQL (MAMP):
-- host: 127.0.0.1, port: 8889
-- user: root, password: root
-- database: majorfit
+```bash
+git clone https://github.com/<your-username>/majorfit-dss.git
+cd majorfit-dss
+```
 
-### 2. Environment
-Copy .env.example files and adjust:
+### 2. Database Setup
+
+You have two options:
+
+**Option A — Quick setup with seed scripts (recommended)**
+
+Make sure MySQL is running, then:
+
+```bash
+npm run setup
+```
+
+This will install dependencies, create `.env` files, provision the database, push the schema, and seed all required data (48 RIASEC questions, 923 O*NET occupations, 186 Vietnamese university programs).
+
+**Option B — Import the demo database from Google Drive**
+
+Download the SQL file from Google Drive: https://drive.google.com/file/d/1ha07pmrRtcxfpRhQR32qaFXQGNmG1B_b/view?usp=sharing
+
+Then create the database and import:
+
+```bash
+# MAMP MySQL (port 8889)
+mysql -u root -proot -h 127.0.0.1 -P 8889 -e "CREATE DATABASE majorfit"
+mysql -u root -proot -h 127.0.0.1 -P 8889 majorfit < ~/Downloads/majorfit_demo.sql
+
+# Standard MySQL (port 3306)
+mysql -u root -p -e "CREATE DATABASE majorfit"
+mysql -u root -p majorfit < ~/Downloads/majorfit_demo.sql
+```
+
+Then install dependencies:
 
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
-```
-
-Key env values:
-- `DATABASE_URL=mysql://root:root@127.0.0.1:8889/majorfit`
-- `JWT_SECRET` (change from default)
-- `ADMIN_EMAILS=admin@majorfit.local`
-
-### 3. Install
-
-```bash
 npm install
 npm --prefix backend install
 npm --prefix frontend install
 ```
 
-### 4. Prepare database
+### 3. Configure Environment
 
-```bash
-npm run db:provision -- --db majorfit
-npm run db:push
-npm run db:sync-admin
+Edit `backend/.env` if your MySQL credentials differ from the defaults:
+
+```env
+PORT=8000
+NODE_ENV=development
+FRONTEND_ORIGIN=http://localhost:5173
+
+JWT_SECRET=replace_with_a_long_random_secret
+ADMIN_EMAILS=admin@majorfit.local
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=123456
+DEFAULT_USER_EMAIL=test@gmail.com
+DEFAULT_USER_PASSWORD=123456
+
+DB_HOST=127.0.0.1
+DB_PORT=8889
+DB_USER=root
+DB_PASS=root
+DB_NAME=majorfit
+
+AI_PROVIDER=groq
+AI_BASE_URL=https://api.groq.com/openai/v1
+AI_MODEL=llama-3.3-70b-versatile
+AI_API_KEY=
+AI_TEMPERATURE=0.2
 ```
 
-### 5. Run
+`frontend/.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
+VITE_PROXY_TARGET=http://localhost:8000
+VITE_ADMIN_EMAILS=admin@majorfit.local
+```
+
+### 4. Run the Application
 
 ```bash
 npm run dev
@@ -70,22 +116,72 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend: http://localhost:8000
 
-## Key Commands
+## AI Configuration (Optional)
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start both frontend + backend |
-| `npm run build` | Production build |
-| `npm run db:push` | Push Prisma schema to DB |
-| `npm run db:sync-admin` | Sync admin accounts |
-| `npm run db:studio` | Open Prisma Studio |
+The matching engine works fully without AI. AI is used only for admin curriculum analysis and student match explanations.
 
-## Database Notes
+To enable AI features:
 
-- Public users: `users` table
-- Admin accounts: `admin` table
-- Assessment data: `RiasecQuestion`, `RiasecAttempt`, `RiasecAnswer`, `UserRiasecProfile`
-- Program data: `University`, `Program`, `ProgramCurriculum`, `ProgramProfile`, `ProgramAnalysisRun`
-- Matching data: `MatchingRun`, `MatchResult`
+1. Go to https://console.groq.com and sign up (free)
+2. Create an API key
+3. Update `backend/.env`:
+   ```env
+   AI_API_KEY=gsk_your_actual_key_here
+   ```
+4. Restart the dev server
 
-See `backend/db/DATABASE_DESIGN.md` for the full schema.
+If `AI_API_KEY` is empty, the system runs in manual mode and AI features are disabled gracefully.
+
+## Default Accounts
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@majorfit.local` | `123456` |
+| User | `test@gmail.com` | `123456` |
+
+If you imported the demo database from Google Drive (Option B), all existing accounts also use the password `123456`.
+
+You can also register a new user account at http://localhost:5173/auth/signup.
+
+## Available Scripts
+
+- `npm run setup` — One-shot setup (install, provision DB, push schema, seed data)
+- `npm run setup:fresh` — Drop database and re-run setup
+- `npm run dev` — Start backend and frontend together
+- `npm run build` — Production build
+- `npm run db:provision` — Create the `majorfit` database
+- `npm run db:push` — Push Prisma schema to MySQL
+- `npm run db:seed-riasec` — Seed RIASEC questions
+- `npm run db:seed-onet` — Seed O*NET occupations
+- `npm run db:seed-programs` — Seed Vietnamese university programs
+- `npm run db:sync-admin` — Sync admin account from `.env`
+- `npm run db:studio` — Open Prisma Studio
+- `npm run test` — Run unit tests
+
+## API Endpoints
+
+- Authentication: `/api/auth/*`
+- Profile: `/api/profile/*`
+- RIASEC: `/api/riasec/*`
+- Programs: `/api/programs/*`
+- Matching: `/api/matching/*`
+- Admin: `/api/admin/*`
+
+## Important Notes
+
+- Make sure MySQL is running before starting the server
+- Backend runs on port 8000, frontend on 5173
+- Default Prisma connection assumes user `root` and password `root`
+- AI features are optional — the matching engine itself is fully deterministic
+- Keep your API keys secure; do not commit `.env` files
+
+## Demo Videos
+
+- Student flow: _add YouTube link here_
+- Admin flow: _add YouTube link here_
+
+## Author
+
+Nguyen Tan Tai
+International University, Vietnam National University Ho Chi Minh City
+Bachelor Thesis, 2026

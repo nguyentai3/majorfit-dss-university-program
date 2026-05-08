@@ -18,6 +18,7 @@ async function matchOccupationsToProfile(riasecScores, limit = 10) {
         },
     });
 
+    // student RIASEC is 0-100, ONET uses 1-7 scale — rescale before comparing
     const maxUser = Math.max(...Object.values(riasecScores), 1);
     const normalized = {};
     for (const dim of DIMENSIONS) {

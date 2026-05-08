@@ -3,7 +3,7 @@ const { VERSION_SOURCES } = require('./defaultQuestionBank');
 const {
     DEFAULT_ASSESSMENT_VERSION,
     QUESTION_BANK_STATUS,
-    RESERVED_LEGACY_VERSIONS,
+    RESERVED_VERSIONS,
     REQUIRED_PER_DIMENSION,
     REQUIRED_QUESTION_COUNT,
     RIASEC_DIMENSIONS,
@@ -177,7 +177,7 @@ async function getDefaultQuestionBankVersion() {
 async function getNextQuestionBankVersion() {
     const knownSourceVersion = Math.max(
         ...Object.keys(VERSION_SOURCES).map((version) => Number(version) || 0),
-        ...RESERVED_LEGACY_VERSIONS,
+        ...RESERVED_VERSIONS,
     );
     const [latestBank, latestQuestion, latestAttempt] = await Promise.all([
         prisma.riasecQuestionBank.findFirst({
@@ -214,7 +214,7 @@ async function createQuestionBank(payload) {
     if (version < 1) {
         throw createServiceError('Question bank version must be a positive integer.');
     }
-    if (RESERVED_LEGACY_VERSIONS.includes(version) && version !== DEFAULT_ASSESSMENT_VERSION) {
+    if (RESERVED_VERSIONS.includes(version) && version !== DEFAULT_ASSESSMENT_VERSION) {
         throw createServiceError('This version is reserved for a legacy question bank. Choose a new version.');
     }
     const historicalAttempts = await prisma.riasecAttempt.count({ where: { questionVersion: version } });

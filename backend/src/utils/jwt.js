@@ -1,5 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken');
 const { env } = require('../config/env');
+// token expires after 7 days, user must login again
 function generateToken(payload) {
     return jsonwebtoken.sign(payload, env.jwtSecret, { expiresIn: '7d' });
 }

@@ -7,15 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const frontendSrc = path.resolve(__dirname, 'src');
 
-function getPublicEnv(name, fallback) {
-  return process.env[`VITE_${name}`] || fallback;
-}
-
 const processEnvShim = {
   NODE_ENV: process.env.NODE_ENV || 'development',
-  VITE_APP_URL: getPublicEnv('APP_URL', 'http://localhost:5173'),
-  VITE_DEMO_MODE: getPublicEnv('DEMO_MODE', 'false'),
-  VITE_GOOGLE_MAPS_API_KEY: getPublicEnv('GOOGLE_MAPS_API_KEY', ''),
 };
 
 export default defineConfig({
@@ -78,40 +71,10 @@ export default defineConfig({
           }
 
           if (
-            packagePath.startsWith('@react-three/fiber/') ||
-            packagePath.startsWith('three/') ||
-            packagePath.startsWith('three-mesh-bvh/') ||
-            packagePath.startsWith('three-stdlib/') ||
-            packagePath.startsWith('troika-three-text/') ||
-            packagePath.startsWith('troika-worker-utils/') ||
-            packagePath.startsWith('camera-controls/') ||
-            packagePath.startsWith('maath/') ||
-            packagePath.startsWith('meshline/') ||
-            packagePath.startsWith('stats-gl/') ||
-            packagePath.startsWith('suspend-react/') ||
-            packagePath.startsWith('tunnel-rat/') ||
-            packagePath.startsWith('@use-gesture/') ||
-            packagePath.startsWith('zustand/')
-          ) {
-            return 'three-support';
-          }
-
-          if (packagePath.startsWith('@react-three/drei/')) {
-            return 'react-three-drei';
-          }
-
-          if (
             packagePath.startsWith('chart.js/') ||
             packagePath.startsWith('react-chartjs-2/')
           ) {
             return 'chartjs-vendor';
-          }
-
-          if (
-            packagePath.startsWith('leaflet/') ||
-            packagePath.startsWith('react-leaflet/')
-          ) {
-            return 'maps-vendor';
           }
 
           return undefined;

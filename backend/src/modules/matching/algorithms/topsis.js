@@ -4,6 +4,7 @@ const {
     closenessScore,
 } = require('../scoring/primitives');
 
+// rank programs by closeness to ideal best vs ideal worst
 function calculateTOPSIS(studentProfile, candidateProfiles) {
     if (!candidateProfiles.length) {
         return [];

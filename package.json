@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "node scripts/setup.js",
+    "setup:fresh": "node scripts/setup-fresh.js",
+    "prepare-demo-dump": "node scripts/prepare-demo-dump.js",
     "dev": "concurrently -n backend,frontend -c blue,green \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend run dev",
@@ -16,12 +19,14 @@
     "db:provision": "npm --prefix backend run db:provision --",
     "db:seed-riasec": "npm --prefix backend run db:seed-riasec",
     "db:seed-programs": "npm --prefix backend run db:seed-programs",
+    "db:seed-onet": "npm --prefix backend run db:seed-onet",
     "db:push": "npm --prefix backend run db:push",
     "db:migrate": "npm --prefix backend run db:migrate",
     "db:sync-admin": "npm run db:sync-admin-roles",
     "db:sync-admin-roles": "npm --prefix backend run db:sync-admin-roles",
     "db:studio": "npm --prefix backend run db:studio",
-    "vercel-build": "npm run build"
+    "test": "npm --prefix backend run test",
+    "benchmark": "npm --prefix backend run benchmark"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

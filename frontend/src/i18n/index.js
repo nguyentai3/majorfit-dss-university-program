@@ -3,10 +3,9 @@ import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import vi from './locales/vi.json';
 const STORAGE_KEY = 'majorfit_language';
-const LEGACY_STORAGE_KEY = 'carr_language';
 function getInitialLanguage() {
     try {
-        const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+        const saved = localStorage.getItem(STORAGE_KEY);
         if (saved === 'vi' || saved === 'en')
             return saved;
     }

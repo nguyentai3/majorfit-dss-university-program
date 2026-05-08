@@ -281,7 +281,7 @@ export default function SavedProgramsPage() {
                         </Link>
                     </section>
                 ) : (
-                    <section className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <section className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
                         <AnimatePresence>
                             {filteredItems.map((item, index) => {
                                 const hollandCode = buildHollandCode(item.latestProfile?.riasecScores);
@@ -293,7 +293,7 @@ export default function SavedProgramsPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, scale: 0.98 }}
                                         transition={{ delay: index * 0.04 }}
-                                        className="rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm"
+                                        className="rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm flex flex-col h-full"
                                     >
                                         <div className="flex items-start justify-between gap-4">
                                             <div>
@@ -327,11 +327,11 @@ export default function SavedProgramsPage() {
                                             </span>
                                         </div>
 
-                                        <div className="mt-6 flex items-center justify-between gap-4 text-sm text-slate-500">
-                                            <span>{text.saved || 'Saved'} {new Date(item.savedAt).toLocaleDateString()}</span>
+                                        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-4 text-sm text-slate-500 mt-auto">
+                                            <span className="truncate">{text.saved || 'Saved'} {new Date(item.savedAt).toLocaleDateString()}</span>
                                                 <Link
                                                     href={`/programs/${item.slug}`}
-                                                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:from-sky-600 hover:via-blue-600 hover:to-indigo-600 hover:shadow-lg hover:shadow-sky-200"
+                                                    className="whitespace-nowrap inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:from-sky-600 hover:via-blue-600 hover:to-indigo-600 hover:shadow-lg hover:shadow-sky-200"
                                                 >
                                                 {text.viewProgram || 'View Program'}
                                             </Link>

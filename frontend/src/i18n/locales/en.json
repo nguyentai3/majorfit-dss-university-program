@@ -153,7 +153,7 @@
     "description": "A thesis-first platform for student assessment, curriculum-based program profiling, and measurable matching.",
     "features": "Features",
     "copyright": "All rights reserved.",
-    "builtWithLove": "Built with care for students everywhere."
+    "tagline": "A thesis project supporting university program recommendation."
   },
   "steps": {
     "step": "Step",
@@ -390,7 +390,27 @@
     "reviewSaved": "Review Saved Programs",
     "stableProfile": "Stable Profile",
     "growthTitle": "Growth From Previous / Baseline",
-    "completeFirst": "Complete the first assessment to generate your initial RIASEC profile."
+    "completeFirst": "Complete the first assessment to generate your initial RIASEC profile.",
+    "profileReliability": "Profile Reliability",
+    "overallConsistency": "Overall Consistency",
+    "scoresConverging": "Your scores are converging — your profile is becoming more stable over time.",
+    "scoresVarying": "Your recent scores show more variation — this can reflect genuine development.",
+    "hollandCodeStability": "Holland Code Stability",
+    "stableSameCodes": "Stable — same Holland code across attempts",
+    "singleAttempt": "Single attempt — take more for stability data",
+    "developingCodes": "Developing — {{count}} unique codes observed",
+    "volatileCodes": "Volatile — {{count}} different codes across attempts",
+    "history": "History",
+    "howMatchingPrepared": "How your matching profile is prepared",
+    "latestScores": "Latest Scores",
+    "latestScoresDesc": "your most recent assessment result.",
+    "stableScores": "Stable Scores",
+    "stableScoresDesc": "a steadier profile built from recent attempts.",
+    "matching": "Matching",
+    "matchingUsesStable": "the program matching algorithm uses your",
+    "matchingMoreAttempts": ", not the latest attempt alone. So more attempts → more accurate matching.",
+    "whyNotLatest": "Why not just use the latest?",
+    "whyNotLatestDesc": "Interests can shift between attempts. A stable profile keeps matching from overreacting to one unusual assessment."
   },
   "savedProgramsPage": {
     "loading": "Loading your saved programs...",
@@ -628,6 +648,13 @@
         "C7": "Handle customers' bank transactions",
         "C8": "Keep shipping and receiving records"
       }
-    }
+    },
+    "noSavedTest": "No saved test found",
+    "questionsChanged": "Questions have changed. Please retake the test.",
+    "progressRestored": "Progress restored ({{answered}}/{{total}} answered)",
+    "missingAnswers": "You still have {{count}} unanswered RIASEC questions. Please answer all before viewing results.",
+    "failedLoadQuestions": "Failed to load assessment questions",
+    "submitSuccess": "Assessment submitted successfully",
+    "submitFailed": "Failed to submit assessment"
   }
 }

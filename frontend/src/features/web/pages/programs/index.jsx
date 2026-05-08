@@ -204,7 +204,7 @@ export default function ProgramsPage() {
                             )}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
                             {items.map((item, index) => {
                                 const code = buildHollandCode(item.latestProfile?.riasecScores);
                                 const isSaved = savedProgramIds.has(item.id);
@@ -212,7 +212,7 @@ export default function ProgramsPage() {
                                 return (
                                     <article
                                         key={item.id}
-                                        className="fade-in-up rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm"
+                                        className="fade-in-up rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm flex flex-col h-full"
                                     >
                                         <div className="flex items-start justify-between gap-4">
                                             <div>
@@ -272,17 +272,17 @@ export default function ProgramsPage() {
                                             )}
                                         </div>
 
-                                        <div className="mt-6 flex items-center justify-between gap-4">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
-                                                <BookOpen className="w-4 h-4" />
-                                                {item.latestCurriculum?.title || text.curriculumReady || 'Published curriculum profile ready'}
+                                        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-4 mt-auto">
+                                            <div className="flex items-center gap-2 text-sm text-slate-500 min-w-0 flex-1">
+                                                <BookOpen className="w-4 h-4 flex-shrink-0" />
+                                                <span className="truncate">{item.latestCurriculum?.title || text.curriculumReady || 'Published curriculum profile ready'}</span>
                                             </div>
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-2 flex-shrink-0">
                                                 <button
                                                     type="button"
                                                     onClick={() => void handleToggleSave(item.id)}
                                                     disabled={savingProgramId === item.id}
-                                                    className={`rounded-full px-4 py-3 text-sm font-semibold transition-colors ${
+                                                    className={`whitespace-nowrap rounded-full px-4 py-3 text-sm font-semibold transition-colors ${
                                                         isSaved
                                                             ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-100'
                                                             : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -292,7 +292,7 @@ export default function ProgramsPage() {
                                                 </button>
                                                 <Link
                                                     href={`/programs/${item.slug}`}
-                                                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-sky-200/60"
+                                                    className="whitespace-nowrap inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:shadow-sky-200/60"
                                                 >
                                                     {text.viewProgram || 'View Program'}
                                                     <ChevronRight className="w-4 h-4" />

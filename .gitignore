@@ -2,6 +2,8 @@
 /backend/node_modules
 /frontend/node_modules
 
+/backend/db_30_2_mysql
+
 /frontend/dist
 /backend/dist
 

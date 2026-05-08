@@ -17,6 +17,7 @@ function normalizeSubmission(body) {
     return body && typeof body === 'object' ? body : {};
 }
 
+// Likert scale 1-5 (Strongly Disagree to Strongly Agree); anything else is invalid
 function toNumericAnswer(rawValue) {
     const numericValue = Number(rawValue);
 
@@ -100,6 +101,7 @@ function calculateScores(questions, answersByQuestionId) {
     };
 }
 
+// top-3 dimensions joined together (e.g. "RIA"); ties broken by R-I-A-S-E-C order
 function buildHollandCode(rawScores) {
     return Object.entries(rawScores)
         .sort((a, b) => {
@@ -161,6 +163,7 @@ function buildStableScores(scoreHistory = []) {
         }, {});
     }
 
+    // most recent attempt counts most, older ones fade out
     const recent = scoreHistory.slice(0, 3);
     const weights = recent.length === 1 ? [1] : recent.length === 2 ? [0.7, 0.3] : [0.6, 0.3, 0.1];
 

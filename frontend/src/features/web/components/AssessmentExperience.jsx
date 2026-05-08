@@ -123,6 +123,7 @@ export default function AssessmentExperience() {
     const router = useRouter();
     const { user, profile, loading: authLoading } = useAuth();
     const { translations } = useLanguage();
+    const assessmentText = translations?.assessment || {};
     const originalQuestionsRef = useRef([]);
     const answersRef = useRef({});
 
@@ -167,7 +168,7 @@ export default function AssessmentExperience() {
         const saved = loadProgress();
         if (!saved || !saved.answers || !saved.questionOrder?.length) {
             setHasSavedProgress(false);
-            toast.error('Không tìm thấy bài test đã lưu');
+            toast.error(assessmentText?.noSavedTest || 'No saved test found');
             return;
         }
         const orderMap = new Map(originalQuestionsRef.current.map((q) => [q.id, q]));
@@ -177,7 +178,7 @@ export default function AssessmentExperience() {
         if (restoredQuestions.length !== originalQuestionsRef.current.length) {
             clearProgress();
             setHasSavedProgress(false);
-            toast.error('Câu hỏi đã thay đổi, vui lòng làm lại bài test');
+            toast.error(assessmentText?.questionsChanged || 'Questions have changed. Please retake the test.');
             return;
         }
         setQuestions(restoredQuestions);
@@ -188,7 +189,7 @@ export default function AssessmentExperience() {
         setContextForm((prev) => ({ ...prev, ...saved.contextForm }));
         setHasSavedProgress(false);
         setView('assessment');
-        toast.success(`Đã khôi phục bài test (${Object.keys(saved.answers).length}/${restoredQuestions.length} câu đã trả lời)`);
+        toast.success((assessmentText?.progressRestored || 'Progress restored ({{answered}}/{{total}} answered)').replace('{{answered}}', Object.keys(saved.answers).length).replace('{{total}}', restoredQuestions.length));
     }
 
     useEffect(() => {
@@ -205,7 +206,6 @@ export default function AssessmentExperience() {
 
     const latestAttempt = history[0] || assessmentProfile?.latestAttempt || null;
     const currentQuestion = questions[currentQuestionIndex] || null;
-    const assessmentText = translations?.assessment || {};
     const landingText = assessmentText?.landing || {};
     const answeredCount = Object.keys(answers).length;
     const progress = questions.length
@@ -268,7 +268,7 @@ export default function AssessmentExperience() {
             setQuestionMode(data.mode || 'iip48');
         } catch (error) {
             console.error('Failed to load assessment questions:', error);
-            toast.error('Failed to load assessment questions');
+            toast.error(assessmentText?.failedLoadQuestions || 'Failed to load assessment questions');
         } finally {
             setLoadingQuestions(false);
         }
@@ -370,7 +370,7 @@ export default function AssessmentExperience() {
             setCurrentQuestionIndex(firstMissingIndex);
         }
         setView('assessment');
-        toast.error(`Bạn còn thiếu ${missingIds.length} câu RIASEC. Vui lòng trả lời đủ trước khi xem kết quả.`);
+        toast.error((assessmentText?.missingAnswers || 'You still have {{count}} unanswered RIASEC questions. Please answer all before viewing results.').replace('{{count}}', missingIds.length));
         return true;
     }
 
@@ -447,11 +447,11 @@ export default function AssessmentExperience() {
             setResult(data.result || null);
             setView('results');
             clearProgress();
-            toast.success('Assessment submitted successfully');
+            toast.success(assessmentText?.submitSuccess || 'Assessment submitted successfully');
             await Promise.all([loadHistory(), loadProfile(), loadCareerSuggestions()]);
         } catch (error) {
             console.error('Failed to submit assessment:', error);
-            toast.error(error?.response?.data?.error || 'Failed to submit assessment');
+            toast.error(error?.response?.data?.error || assessmentText?.submitFailed || 'Failed to submit assessment');
         } finally {
             setSubmitting(false);
         }

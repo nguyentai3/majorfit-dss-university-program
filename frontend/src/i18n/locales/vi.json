@@ -153,7 +153,7 @@
     "description": "Nền tảng phục vụ luận văn cho đánh giá sinh viên, phân tích chương trình đào tạo và ghép ngành có thể đo lường.",
     "features": "Tính năng",
     "copyright": "Đã đăng ký bản quyền.",
-    "builtWithLove": "Xây dựng cẩn thận cho sinh viên."
+    "tagline": "Dự án thesis hỗ trợ tư vấn chương trình đại học."
   },
   "steps": {
     "step": "Bước",
@@ -390,7 +390,27 @@
     "reviewSaved": "Xem ngành đã lưu",
     "stableProfile": "Hồ sơ ổn định",
     "growthTitle": "Tăng trưởng so với lần trước / mốc ban đầu",
-    "completeFirst": "Hoàn thành bài đánh giá đầu tiên để tạo hồ sơ RIASEC ban đầu."
+    "completeFirst": "Hoàn thành bài đánh giá đầu tiên để tạo hồ sơ RIASEC ban đầu.",
+    "profileReliability": "Độ tin cậy hồ sơ",
+    "overallConsistency": "Tính nhất quán tổng thể",
+    "scoresConverging": "↗ Điểm số của bạn đang hội tụ — hồ sơ ngày càng ổn định theo thời gian.",
+    "scoresVarying": "↘ Điểm số gần đây có biến động hơn — điều này có thể phản ánh sự phát triển thực sự.",
+    "hollandCodeStability": "Độ ổn định Holland code",
+    "stableSameCodes": "Ổn định — cùng Holland code qua các lần thi",
+    "singleAttempt": "Chỉ 1 lần thi — làm thêm để có dữ liệu ổn định",
+    "developingCodes": "Đang phát triển — {{count}} code khác nhau",
+    "volatileCodes": "Biến động — {{count}} code khác nhau qua các lần thi",
+    "history": "Lịch sử",
+    "howMatchingPrepared": "Hồ sơ matching được chuẩn bị như thế nào",
+    "latestScores": "Điểm mới nhất",
+    "latestScoresDesc": "kết quả bài đánh giá gần nhất của bạn.",
+    "stableScores": "Điểm ổn định",
+    "stableScoresDesc": "hồ sơ ổn định hơn được xây dựng từ các lần thi gần đây.",
+    "matching": "Ghép cặp",
+    "matchingUsesStable": "thuật toán ghép cặp chương trình sử dụng",
+    "matchingMoreAttempts": ", chứ không chỉ lần thi mới nhất. Càng nhiều lần thi → ghép càng chính xác.",
+    "whyNotLatest": "Sao không chỉ dùng kết quả mới nhất?",
+    "whyNotLatestDesc": "Sở thích có thể thay đổi giữa các lần thi. Hồ sơ ổn định giúp ghép cặp không phản ứng thái quá với một lần thi bất thường."
   },
   "savedProgramsPage": {
     "loading": "Đang tải ngành đã lưu...",
@@ -628,6 +648,13 @@
         "C7": "Xử lý giao dịch ngân hàng của khách hàng",
         "C8": "Lưu giữ hồ sơ giao nhận hàng"
       }
-    }
+    },
+    "noSavedTest": "Không tìm thấy bài test đã lưu",
+    "questionsChanged": "Câu hỏi đã thay đổi, vui lòng làm lại bài test",
+    "progressRestored": "Đã khôi phục bài test ({{answered}}/{{total}} câu đã trả lời)",
+    "missingAnswers": "Bạn còn thiếu {{count}} câu RIASEC. Vui lòng trả lời đủ trước khi xem kết quả.",
+    "failedLoadQuestions": "Không tải được câu hỏi đánh giá",
+    "submitSuccess": "Đã gửi bài đánh giá thành công",
+    "submitFailed": "Gửi bài đánh giá không thành công"
   }
 }

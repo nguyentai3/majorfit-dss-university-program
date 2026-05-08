@@ -109,7 +109,7 @@ const CONGRUENCE_THRESHOLD = 9;
     console.log(`Avg congruence rate Top-3 : ${(avg(stats.top3CongruentRate) * 100).toFixed(1)}%`);
     console.log(`Avg congruence rate Top-5 : ${(avg(stats.top5CongruentRate) * 100).toFixed(1)}%`);
     console.log(`Avg congruence rate Top-10: ${(avg(stats.top10CongruentRate) * 100).toFixed(1)}%`);
-    console.log(`\n--- Preferred-major (legacy metric, for context only) ---`);
+    console.log(`\n--- Preferred-major (additional metric, for context only) ---`);
     console.log(`Avg pref rank (when in top-20): ${avg(stats.prefRank).toFixed(1)} (n=${stats.prefRank.length}/${stats.users})`);
     console.log(`Avg pref-major Iachan with student: ${avg(stats.prefIachan).toFixed(1)} (max possible = 21)`);
     console.log(`→ Pref-major Iachan < 9 means user's stated preference is NOT Holland-aligned with their RIASEC code`);

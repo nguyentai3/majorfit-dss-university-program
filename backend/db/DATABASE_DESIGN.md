@@ -127,22 +127,3 @@ npm run prisma:generate
 npx prisma db push --schema db/prisma/schema.prisma
 ```
 
-### Migration from old database
-
-```bash
-# 1. Create the current DB in MAMP phpMyAdmin
-CREATE DATABASE majorfit;
-
-# 2. Update .env
-DATABASE_URL="mysql://root@127.0.0.1:3306/majorfit"
-
-# 3. Push schema
-npx prisma db push --schema db/prisma/schema.prisma
-
-# 4. Copy data
-mysql -u root < db/migrate-to-v2.sql
-
-# 5. Seed (if fresh start)
-npm run seed:riasec
-npm run seed:programs
-```

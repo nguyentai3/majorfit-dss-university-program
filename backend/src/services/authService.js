@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs');
+// 12 rounds — slower but safer against brute force
 async function hashPassword(password) {
     return bcryptjs.hash(password, 12);
 }
